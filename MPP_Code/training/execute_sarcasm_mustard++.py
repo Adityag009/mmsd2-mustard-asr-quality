@@ -86,7 +86,7 @@ args = argParser.parse_args()
 # Loading data
 path = "MPP_Code/data/"
 mustard_input = pd.read_csv('MPP_Code/data/final_datasets/mustard++_sarcasm_detection.csv', index_col=0)
-temp = open(path+'extracted_features/an_merged/features_Tbart_Vkey_Audio_sarcasm.pickle', 'rb')
+temp = open(path + "extracted_features/features_merged.pkl", "rb")
 data = pickle.load(temp)
 
 # Normalizing class

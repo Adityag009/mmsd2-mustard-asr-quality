@@ -111,7 +111,8 @@ mustard_input = pd.read_csv(path+'final_datasets/augmented_sarcastic_utterances.
 # temp = open(path+'extracted_features/all_features_with_roberta.pickle', 'rb')
 # temp = open(path+'extracted_features/all_features_with_meanedbart.pickle', 'rb')
 # temp = open(path+'extracted_features/an_merged/augmented_features_with_bart.pickle', 'rb')
-temp = open(path+'extracted_features/an_merged/features_Tbart_Vkey_Audio_sarcasm.pickle', 'rb')
+temp = open(path + "extracted_features/features_merged.pkl", "rb")
+
 data = pickle.load(temp)
 
 # Normalizing class

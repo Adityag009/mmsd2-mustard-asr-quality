@@ -20,7 +20,7 @@ With **[uv](https://docs.astral.sh/uv/)** from the **repository root** (where `p
 uv sync
 ```
 
-That creates or updates `.venv` and installs the same dependencies from `pyproject.toml` (a `uv.lock` file may be generated for reproducible installs).
+That creates or updates `.venv` and installs from `pyproject.toml`. Optionally run **`uv lock`** locally if you want a personal `uv.lock`; this remote does **not** track `uv.lock` (see root `README`).
 
 The scripts assume a **CUDA GPU** by default (`cuda:0`, `cuda:1`, etc.). To train on CPU you would need to edit each script and change `torch.device("cuda:...")` to `torch.device("cpu")`.
 
@@ -35,14 +35,14 @@ Training scripts use `from models import ...`, so **`MPP_Code` must be on `PYTHO
 **Windows (PowerShell), from the repo root:**
 
 ```powershell
-cd path\to\MUStARD_Plus_Plus
+cd path\to\your-repo-clone
 $env:PYTHONPATH = "$PWD\MPP_Code"
 ```
 
 **Linux / macOS:**
 
 ```bash
-cd /path/to/MUStARD_Plus_Plus
+cd /path/to/your-repo-clone
 export PYTHONPATH="$(pwd)/MPP_Code"
 ```
 
@@ -50,12 +50,12 @@ export PYTHONPATH="$(pwd)/MPP_Code"
 
 ## 3. Data you need
 
-Training reads **CSV metadata** plus **pickled feature tensors**. In this checkout you may already have splits and `MPP_Code/data/extracted_features/*.pkl` copied from an experiment machine; if not, populate:
+Training reads **CSV metadata** plus **pickled feature tensors**:
 
-- CSVs and **train/test split** files under `MPP_Code/data/` (exact filenames differ per script; see section 5).
-- **Pickle files** of multimodal features under `MPP_Code/data/extracted_features/` (and subfolders such as `an_merged/` if your script expects them).
+- **`MPP_Code/data/extracted_features/*.pkl`** — versioned here; you still must add **CSVs/splits locally** wherever the script expects them (unless you rewrote paths).
+- **`MPP_Code/data/*.csv`** and **`.../splits_*/*.csv`** (and local **video clips** under `MPP_Code/data/…`) — **not** in this remote ([`.gitignore`](../.gitignore)). Obtain from the MUStARD++ **[Drive folder](https://drive.google.com/drive/folders/1kUdT2yU7ERJ5KdauObTj5oQsBlSrvTlW?usp=sharing)**, replicate an older experiment machine, or copy from a teammate; exact filenames vary by script (see section 5). Some pickles may live under subfolders such as **`an_merged/`** depending on which training file you run.
 
-To regenerate features yourself, run the extractors under `embedding_pipeline/` at the repo root (see root `README.md`). Videos are hosted separately: [Google Drive folder](https://drive.google.com/drive/folders/1kUdT2yU7ERJ5KdauObTj5oQsBlSrvTlW?usp=sharing).
+Regenerate embeddings with `embedding_pipeline/` at the repo root (root [`README.md`](../README.md)).
 
 If a path is missing, the script will fail at `read_csv` or `open(...pickle)`.
 
@@ -135,7 +135,7 @@ python MPP_Code/training/execute_sarcasm_mustard.py -s n -m VTA -c y
 1. `cd` to repository root.  
 2. Set `PYTHONPATH` to `.../MPP_Code`.  
 3. Install dependencies (`torch`, `torchvision`, `numpy`, `pandas`, `scikit-learn`).  
-4. Place CSVs, pickles, and split files where each script expects them (or update paths in the script).  
+4. Ensure **CSV metadata + splits** (local) sit where your script expects, and **pickles** from `data/extracted_features/` match that script; fix paths if your layout differs.  
 5. Create output directories under `MPP_Code/log/` (and related) if needed.  
 6. Run the chosen `python MPP_Code/training/<script>.py ...` command.
 
@@ -147,6 +147,6 @@ python MPP_Code/training/execute_sarcasm_mustard.py -s n -m VTA -c y
 |------|------|
 | `models/` | Model definitions (`emotion_classification_model.py`, `emotion_regression_model.py`) |
 | `training/` | Executable training / tuning scripts |
-| `data/` | You populate: CSVs, `extracted_features/`, split CSVs |
+| `data/` | Versioned: `extracted_features/*.pkl`. Local only: CSVs, splits, video folders (see §3) |
 
 Features are not recomputed inside these training scripts; they load pre-extracted tensors from pickles as configured at the top of each training file.

@@ -2,13 +2,7 @@
 
 This repository is the **working codebase** for our project on multimodal sarcasm detection, including **automatic speech recognition (ASR)** experiments and benchmarking with **MMSD2.0-style** setups on an **adapted MUStARD++** split (subset / modality reductions described below). The corpus and prior feature pipelines come from **[MUStARD++](https://aclanthology.org/2022.lrec-1.137/)** (LREC 2022: *A Multimodal Corpus for Emotion Recognition in Sarcasm*).
 
-**Suggested names for your new GitHub repo** (pick one that fits your course/lab conventions):
-
-| Style | Examples |
-|--------|----------|
-| Model + corpus | `mmsd2-mustardpp`, `MMSD2.0-adapted-mustard-plus-plus` |
-| Task-first | `multimodal-sarcasm-asr`, `sarcasm-mmsd-asr-benchmark` |
-| Short lab label | `mmsd-lab-mustardpp`, `mustard-image-text-asr` |
+**Repository:** [`Adityag009/mmsd2-mustard-asr-quality`](https://github.com/Adityag009/mmsd2-mustard-asr-quality) (clone URL below).
 
 Use this README to orient the machine, install dependencies, and run training or extraction. **Training flags and paths** remain in [`MPP_Code/README.md`](MPP_Code/README.md).
 
@@ -44,7 +38,7 @@ Full MUStARD++ instances are **dialogue-grounded**: an **utterance** plus **conv
 
 | Area | Contents |
 |------|----------|
-| [`MPP_Code/`](MPP_Code/) | PyTorch models, training scripts, CSV splits, extracted feature pickles consumed by training |
+| [`MPP_Code/`](MPP_Code/) | PyTorch models, training scripts, `data/extracted_features/*.pkl` (versioned). **CSV splits / labels / clips** stay local ([`.gitignore`](.gitignore)); see [`MPP_Code/README.md`](MPP_Code/README.md). |
 | [`embedding_pipeline/`](embedding_pipeline/) | Scripts to build CSVs / extract multimodal embeddings (see “Feature extraction”) |
 | `mustard++_text.csv` | Text + annotations export (referenced by embedding scripts via repo root paths) |
 
@@ -68,8 +62,8 @@ The multimodal corpus pairs each **utterance** with **context** from TV dialogue
 ### 1. Clone and enter the repo
 
 ```powershell
-git clone <your-new-repo-url>
-cd <your-repo-folder>
+git clone https://github.com/Adityag009/mmsd2-mustard-asr-quality.git
+cd mmsd2-mustard-asr-quality
 ```
 
 ### 2. Python environment
@@ -137,6 +131,8 @@ Pre-extracted tensors may live under `MPP_Code/data/extracted_features/` (`.pkl`
 - **Branch per experiment** or per person; merge when results are stable.
 - **Document** in the PR or a short `experiments/<name>.md` (only if the team wants a log—keep it minimal) the script, flags, seed, and commit hash.
 
+---
+
 ## What we commit vs keep local
 
 Remote includes **experiment outputs** (`MPP_Code/log/`, `MPP_Code/charts/`, `MPP_Code/stats/`, `MPP_Code/predictions/` when you add them), **`MPP_Code/data/extracted_features/*.pkl`**, and the **training code**.
@@ -148,7 +144,7 @@ We **omit** **`uv.lock`** (install from `pyproject.toml` locally), **`MPP_Code/d
 ## Project layout (summary)
 
 ```
-<repo-root>/
+mmsd2-mustard-asr-quality/
   README.md                 ← you are here
   pyproject.toml            ← core deps (no uv.lock on remote; run uv sync locally)
   mustard++_text.csv

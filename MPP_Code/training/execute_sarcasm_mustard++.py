@@ -4,6 +4,12 @@ import time
 import sys
 import os
 import random
+from pathlib import Path
+
+# MPP_Code on path (avoids ModuleNotFoundError: models when PYTHONPATH is unset)
+_mpp = Path(__file__).resolve().parents[1]
+if str(_mpp) not in sys.path:
+    sys.path.insert(0, str(_mpp))
 import pickle
 import argparse
 from sklearn.metrics import confusion_matrix, f1_score, accuracy_score, classification_report

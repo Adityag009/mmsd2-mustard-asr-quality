@@ -2,6 +2,8 @@
 
 This repository was created as part of our submission 'A Multimodal Corpus for Emotion Recognition in Sarcasm' to LREC-2022
 
+**Running the training code (dependencies, paths, example commands):** see [MPP_Code/README.md](MPP_Code/README.md).
+
 Our multimodal dataset consists of dialogs from sit-coms each of which is presented as a combination of the main 'utterance' and the 'context' in which it was uttered. There are 1202 instances (utterance+context) out of which 601 are sarcastic and 601 are non-sarcastic. Each utterance is annotated with the following information
 
 

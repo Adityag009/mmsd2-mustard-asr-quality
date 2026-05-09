@@ -1,0 +1,53 @@
+[project]
+name = "mustard-plusplus"
+version = "0.0.0"
+description = "Dependencies for MUStARD++ training scripts (MPP_Code)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "scikit-learn>=1.3",
+    "torch>=2.2",
+    "torchvision>=0.17",
+]
+
+[project.optional-dependencies]
+embed = [
+    "transformers>=4.36",
+    "accelerate>=0.25",
+    "tqdm>=4.66",
+    "librosa>=0.10",
+    "soundfile>=0.12",
+    "opensmile>=2.5",
+    "imageio-ffmpeg>=0.4",
+    "katna>=0.9",
+    "opencv-python-headless>=4.8",
+    "Pillow>=10.0",
+]
+
+[tool.uv]
+# This repo is scripts + data, not an installable Python package.
+package = false
+
+# GPU (Windows/Linux): CUDA wheels from PyTorch index. macOS: CPU wheels (no CUDA from PyTorch).
+# https://docs.astral.sh/uv/guides/integration/pytorch/
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", marker = "sys_platform == 'darwin'" },
+    { index = "pytorch-cu130", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+torchvision = [
+    { index = "pytorch-cpu", marker = "sys_platform == 'darwin'" },
+    { index = "pytorch-cu130", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]

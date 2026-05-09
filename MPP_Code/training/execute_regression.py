@@ -102,7 +102,8 @@ path = "MPP_Code/data/"
 mustard_input = pd.read_csv(path+'mustard_PP_utterance.csv')
 print(mustard_input.columns)
 
-temp = open(path+'extracted_features/an_merged/features_Tbart_Vkey_Audio.pickle', 'rb')
+temp = open(path + "extracted_features/features_merged.pkl", "rb")
+
 data = pickle.load(temp)
 
 # Normalizing class

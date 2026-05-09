@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import time
 import sys
+import os
 import random
 import pickle
 import argparse
@@ -95,8 +96,8 @@ mustard_input = pd.read_csv(path+'mustard_PP_utterance.csv')
 print(mustard_input.columns)
 
 
-# Use the right pickle file based on which benchmark you intend to use
-temp = open(path+'extracted_features/an_merged/features_Tbart_Vkey_Audio_sarcasm.pickle', 'rb')
+# Merged multimodal features (embedding_pipeline merge_multimodal_pickles)
+temp = open(path + "extracted_features/features_merged.pkl", "rb")
 data = pickle.load(temp)
 
 # Normalizing class
@@ -211,9 +212,11 @@ def training(mod, criterion, optimizer, call, train_loader, valid_loader, fold, 
     max_f1 = 0
     patience_flag = 1
     best_epooch = 0
+    best_model = mod
     print(fold, e, patience)
 
     while e > 0:
+        mod.train()
         total_loss = []
         seed()
         for batch in train_loader:
@@ -233,6 +236,7 @@ def training(mod, criterion, optimizer, call, train_loader, valid_loader, fold, 
             total_loss.append(loss.detach().item())
             loss.backward()
             optimizer.step()
+        mod.eval()
         with torch.no_grad():
             valid_f1, valid_loss = evaluation(
                 valid_loader, mod, call, report, False)
@@ -253,6 +257,7 @@ def training(mod, criterion, optimizer, call, train_loader, valid_loader, fold, 
                     patience_flag = 0
             else:
                 patience_flag = 1
+    best_model.eval()
     return evaluation(valid_loader, best_model, call, report, True), best_epooch
 
 
@@ -361,11 +366,11 @@ audio_embedding_size = 291
 text_embedding_size = 1024
 shared_embedding_size = 1024
 projection_embedding_size = 512
-epoch = args.epoch
-lr = args.learning_rate
-patience = args.patience
-batch_size = args.batch_size
-dropout = args.dropout
+epooch = int(args.epooch)
+lr = float(args.learning_rate)
+patience = int(args.patience)
+batch_size = int(args.batch_size)
+dropout = float(args.dropout)
 
 # get out model name , parameters, and command as per the arguments provided in command line
 MODEL_NAME, parameters, COMMAND = get_model_and_parameters(args)
@@ -378,6 +383,19 @@ parameters['dropout'] = dropout
 filename = args.mode
 filename += '_context_'+args.context.upper()
 filename += '_speaker_'+args.speaker.upper()
+
+_log_root = "MPP_Code/log/lrec_complete_explicit"
+_chart_root = "MPP_Code/charts/lrec_complete_explicit"
+_stats_root = "MPP_Code/stats/lrec_complete_explicit"
+_pred_root = "MPP_Code/predictions/lrec_complete_explicit"
+for d in (
+    _log_root,
+    _chart_root,
+    _stats_root,
+    _pred_root,
+    f"{_pred_root}/{args.mode}",
+):
+    os.makedirs(d, exist_ok=True)
 
 """ Provide paths based on if/how you wish to log or generate charts """
 
@@ -441,7 +459,13 @@ for dropout in [0.2, 0.3, 0.4]:
                     train_dataset = ContentDataset(train, data, speaker_list)
                     seed()
                     train_loader = DataLoader(
-                        train_dataset, batch_size, num_workers=0, pin_memory=False, worker_init_fn=seed_worker)
+                        train_dataset,
+                        batch_size,
+                        num_workers=0,
+                        pin_memory=False,
+                        worker_init_fn=seed_worker,
+                        drop_last=True,
+                    )
                     seed()
                     valid_dataset = ContentDataset(valid, data, speaker_list)
                     seed()
@@ -522,3 +546,4 @@ for dropout in [0.2, 0.3, 0.4]:
 
 
 f.close()
+

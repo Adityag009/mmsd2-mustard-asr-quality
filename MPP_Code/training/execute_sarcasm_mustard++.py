@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import time
 import sys
+import os
 import random
 import pickle
 import argparse
@@ -431,6 +432,12 @@ elif args.train_frac < 1.0:
     filename += "_train{}pct".format(int(round(args.train_frac * 100)))
 
 split_dir = args.split_dir.rstrip("/\\")
+
+os.makedirs("MPP_Code/log/sarcasm", exist_ok=True)
+os.makedirs("MPP_Code/charts/sarcasm", exist_ok=True)
+os.makedirs("MPP_Code/stats/sarcasm", exist_ok=True)
+os.makedirs("MPP_Code/saved_models/sarc", exist_ok=True)
+os.makedirs(os.path.join("MPP_Code/predictions/sarcasm", args.mode), exist_ok=True)
 
 """ File to store log"""
 f = open('MPP_Code/log/sarcasm/an_lrec_' +

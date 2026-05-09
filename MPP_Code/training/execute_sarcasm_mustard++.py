@@ -513,7 +513,13 @@ for fold in range(5):
     train_dataset = ContentDataset(train, data, speaker_list)
     seed()
     train_loader = DataLoader(
-        train_dataset, batch_size, num_workers=0, pin_memory=False, worker_init_fn=seed_worker)
+        train_dataset,
+        batch_size,
+        num_workers=0,
+        pin_memory=False,
+        worker_init_fn=seed_worker,
+        drop_last=True,
+    )
     seed()
     valid_dataset = ContentDataset(valid, data, speaker_list)
     seed()

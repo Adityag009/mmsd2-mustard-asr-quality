@@ -6,6 +6,7 @@ import random
 import pickle
 import argparse
 from sklearn.metrics import confusion_matrix, f1_score, accuracy_score, classification_report
+from sklearn.model_selection import train_test_split
 
 import torch
 import torch.nn as nn
@@ -54,6 +55,19 @@ def seed_worker(worker_id):
     random.seed(worker_seed)
 
 
+def subsample_train_df(train_df, frac, random_state):
+    """Stratified subset of rows by SAR; full frame if frac >= 1."""
+    if frac >= 1.0:
+        return train_df
+    sub, _ = train_test_split(
+        train_df,
+        train_size=frac,
+        stratify=train_df["SAR"],
+        random_state=random_state,
+    )
+    return sub.reset_index(drop=True)
+
+
 seed()
 """ argument parser is used for running the script from terminal, makes it robust """
 argParser = argparse.ArgumentParser()
@@ -81,7 +95,25 @@ argParser.add_argument("-pr", "--projection", default=256,
                        help="Projection embedding size")
 argParser.add_argument("-sh", "--shared", default=1024,
                        help="Shared embedding size")
+argParser.add_argument(
+    "--split_dir",
+    default="MPP_Code/data/split_mustard_pp_sarcasm",
+    help="Directory with train_{i}.csv and test_{i}.csv (i=0..4)",
+)
+argParser.add_argument(
+    "--train_frac",
+    type=float,
+    default=1.0,
+    help="Fraction of each fold's training CSV to use (0-1], stratified by SAR. 1.0 = full train set.",
+)
+argParser.add_argument(
+    "--run_tag",
+    default="",
+    help="Optional suffix for log/stats/predictions filenames (default: auto from train_frac if < 1)",
+)
 args = argParser.parse_args()
+if not 0 < args.train_frac <= 1.0:
+    raise SystemExit("--train_frac must be in (0, 1].")
 
 # Loading data
 path = "MPP_Code/data/"
@@ -397,7 +429,12 @@ parameters['dropout'] = dropout
 filename = args.mode
 filename += '_context_'+args.context.upper()
 filename += '_speaker_'+args.speaker.upper()
+if args.run_tag:
+    filename += "_" + args.run_tag.strip("_")
+elif args.train_frac < 1.0:
+    filename += "_train{}pct".format(int(round(args.train_frac * 100)))
 
+split_dir = args.split_dir.rstrip("/\\")
 
 """ File to store log"""
 f = open('MPP_Code/log/sarcasm/an_lrec_' +
@@ -459,9 +496,10 @@ for fold in range(5):
         this is done in order to keep consistency in different experiments (to deal with randomness)
     """
     train = pd.read_csv(
-        'MPP_Code/data/split_mustard_pp_sarcasm/train_' + str(fold)+'.csv')
+        split_dir + "/train_" + str(fold) + ".csv")
     valid = pd.read_csv(
-        'MPP_Code/data/split_mustard_pp_sarcasm/test_' + str(fold)+'.csv')
+        split_dir + "/test_" + str(fold) + ".csv")
+    train = subsample_train_df(train, args.train_frac, int(args.seed))
     seed()
     train_dataset = ContentDataset(train, data, speaker_list)
     seed()

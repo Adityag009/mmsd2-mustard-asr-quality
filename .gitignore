@@ -1,0 +1,28 @@
+# Python / tooling
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
+.ipynb_checkpoints/
+
+# Editors / OS
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Team preference: reproducible resolves via pyproject.toml; no lockfile in remote
+uv.lock
+
+# MUStARD++ corpus material under data/ stays local — do NOT push splits, CSVs, or clips.
+# We only version feature tensors as pickles plus experiment outputs elsewhere in MPP_Code/.
+MPP_Code/data/**/*.csv
+MPP_Code/data/**/*.mp4
+MPP_Code/data/augmented_utterance/
+MPP_Code/data/final_context_videos/
+MPP_Code/data/final_utterance_videos/
+MPP_Code/data/splits_final_mustard++/
+MPP_Code/data/final_datasets/

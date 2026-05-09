@@ -391,10 +391,6 @@ def get_model_and_parameters(args):
         input_modes, args.context.lower(), args.speaker.lower())
     return MODEL_NAME, parameters, COMMAND
 
-# WE ARE NOT USING THIS
-with open(path+'splits.pickle', "rb") as fp:
-    split = pickle.load(fp)
-
 #just intilizing 
 video_embedding_size = 2048
 audio_embedding_size = 291

@@ -1,0 +1,22 @@
+Speaker_Independent_Triple_Mode_with_Context
+n_epoch:4 | dropout:0.3 | lr:0.001 | batch_size:64 | shared_embedding_size:1024 | projection_embedding_size:256
+              precision    recall  f1-score   support
+
+           0      0.630     0.614     0.622       601
+           1      0.623     0.639     0.631       601
+
+    accuracy                          0.626      1202
+   macro avg      0.627     0.626     0.626      1202
+weighted avg      0.627     0.626     0.626      1202
+
+----------------------------------------------------------------------------------------------------
+dropout:0.3 | lr:0.001 | batch_size:64 | shared_embedding_size:1024 | projection_embedding_size:256
+              precision    recall  f1-score      support
+0              0.629693  0.613977  0.621735   601.000000
+1              0.623377  0.638935  0.631060   601.000000
+accuracy       0.626456  0.626456  0.626456     0.626456
+macro avg      0.626535  0.626456  0.626398  1202.000000
+weighted avg   0.626535  0.626456  0.626398  1202.000000
+----------------------------------------------------------------------------------------------------
+####################################################################################################
+Speaker_Independent_Triple_Mode_with_Context

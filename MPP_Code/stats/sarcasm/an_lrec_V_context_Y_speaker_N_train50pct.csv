@@ -1,0 +1,2 @@
+dropout,lr,batch_size,shared_embedding_size,projection_embedding_size,epoch,Precision,Recall,F1
+0.3,0.001,64.0,1024.0,256.0,4.0,0.589,0.589,0.589

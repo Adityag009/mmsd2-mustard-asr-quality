@@ -1,0 +1,37 @@
+2026-05-06 23:56:42,695 INFO    MainThread:53672 [wandb_setup.py:_flush():81] Current SDK version is 0.26.1
+2026-05-06 23:56:42,695 INFO    MainThread:53672 [wandb_setup.py:_flush():81] Configure stats pid to 53672
+2026-05-06 23:56:42,695 INFO    MainThread:53672 [wandb_setup.py:_flush():81] Loading settings from environment variables
+2026-05-06 23:56:42,695 INFO    MainThread:53672 [wandb_init.py:setup_run_log_directory():723] Logging user logs to X:\ASR\MMSD2.0-main\src\wandb\offline-run-20260506_235642-kx1y6651\logs\debug.log
+2026-05-06 23:56:42,696 INFO    MainThread:53672 [wandb_init.py:setup_run_log_directory():724] Logging internal logs to X:\ASR\MMSD2.0-main\src\wandb\offline-run-20260506_235642-kx1y6651\logs\debug-internal.log
+2026-05-06 23:56:42,697 INFO    MainThread:53672 [wandb_init.py:init():850] calling init triggers
+2026-05-06 23:56:42,697 INFO    MainThread:53672 [wandb_init.py:init():855] wandb.init called with sweep_config: {}
+config: {'device': '1', 'model': 'MV_CLIP', 'text_name': 'text_json_final', 'weight_text': 0.33, 'weight_image': 0.33, 'weight_audio': 0.34, 'audio_size': 768, 'simple_linear': False, 'num_train_epochs': 10, 'train_batch_size': 32, 'dev_batch_size': 32, 'label_number': 2, 'text_size': 512, 'image_size': 768, 'adam_epsilon': 1e-08, 'optimizer_name': 'adam', 'learning_rate': 0.0005, 'clip_learning_rate': 1e-06, 'max_len': 77, 'layers': 3, 'max_grad_norm': 5.0, 'weight_decay': 0.05, 'warmup_proportion': 0.2, 'dropout_rate': 0.1, 'output_dir': '../output_dir/', 'limit': None, 'seed': 42, '_wandb': {}}
+2026-05-06 23:56:42,697 INFO    MainThread:53672 [wandb_init.py:init():898] starting backend
+2026-05-06 23:56:45,781 INFO    MainThread:53672 [wandb_init.py:init():913] sending inform_init request
+2026-05-06 23:56:46,359 INFO    MainThread:53672 [wandb_init.py:init():918] backend started and connected
+2026-05-06 23:56:46,361 INFO    MainThread:53672 [wandb_init.py:init():988] updated telemetry
+2026-05-06 23:56:46,367 INFO    MainThread:53672 [wandb_init.py:init():1011] communicating run to backend with 90.0 second timeout
+2026-05-06 23:56:46,374 INFO    MainThread:53672 [wandb_init.py:init():1056] starting run threads in backend
+2026-05-06 23:56:46,472 INFO    MainThread:53672 [wandb_run.py:_console_start():2554] atexit reg
+2026-05-06 23:56:46,472 INFO    MainThread:53672 [wandb_run.py:_redirect():2403] redirect: wrap_raw
+2026-05-06 23:56:46,472 INFO    MainThread:53672 [wandb_run.py:_redirect():2472] Wrapping output streams.
+2026-05-06 23:56:46,472 INFO    MainThread:53672 [wandb_run.py:_redirect():2495] Redirects installed.
+2026-05-06 23:56:46,482 INFO    MainThread:53672 [wandb_init.py:init():1094] run started, returning control to user process
+2026-05-06 23:56:53,029 INFO    MainThread:53672 [wandb_watch.py:_watch():69] Watching
+2026-05-06 23:56:59,382 INFO    wandb-AsyncioManager-main:53672 [service_client.py:_forward_responses():134] Reached EOF.
+2026-05-06 23:56:59,382 INFO    wandb-AsyncioManager-main:53672 [mailbox.py:close():155] Closing mailbox, abandoning 0 handles.
+2026-05-06 23:56:59,440 ERROR   wandb-AsyncioManager-main:53672 [asyncio_manager.py:fn_wrap_exceptions():184] Uncaught exception in run_soon callback.
+Traceback (most recent call last):
+  File "X:\ASR\MMSD2.0-main\mmsd2.0\Lib\site-packages\wandb\sdk\lib\asyncio_manager.py", line 182, in fn_wrap_exceptions
+    await fn()
+  File "X:\ASR\MMSD2.0-main\mmsd2.0\Lib\site-packages\wandb\sdk\lib\service\service_client.py", line 45, in publish
+    await self._send_server_request(request)
+  File "X:\ASR\MMSD2.0-main\mmsd2.0\Lib\site-packages\wandb\sdk\lib\service\service_client.py", line 87, in _send_server_request
+    await self._drain_writer()
+  File "X:\ASR\MMSD2.0-main\mmsd2.0\Lib\site-packages\wandb\sdk\lib\service\service_client.py", line 96, in _drain_writer
+    await self._writer.drain()
+  File "C:\Python312\Lib\asyncio\streams.py", line 392, in drain
+    await self._protocol._drain_helper()
+  File "C:\Python312\Lib\asyncio\streams.py", line 166, in _drain_helper
+    raise ConnectionResetError('Connection lost')
+ConnectionResetError: Connection lost

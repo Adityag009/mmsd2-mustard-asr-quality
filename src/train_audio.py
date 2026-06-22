@@ -1,5 +1,5 @@
 import os
-from data_set_audio import MyDataset ### CHANGED: Point to your new dataset
+from data_set_audio import MyDataset 
 from torch.utils.data import DataLoader
 import torch
 import logging
@@ -12,7 +12,6 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message
                     datefmt='%m/%d/%Y %H:%M:%S',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 def train(args, model, device, train_data, dev_data, test_data, processor):
     if not os.path.exists(args.output_dir):
@@ -67,20 +66,19 @@ def train(args, model, device, train_data, dev_data, test_data, processor):
         model.train()
 
         for step, batch in enumerate(iter_bar):
-            ### CHANGED: Added audio_list to catch the 5th item from your dataset
+          
             text_list, image_list, audio_list, label_list, id_list = batch
             
             if args.model == 'MV_CLIP':
                 inputs = processor(text=text_list, images=image_list, padding='max_length', truncation=True, max_length=args.max_len, return_tensors="pt").to(device)
                 labels = torch.tensor(label_list).to(device)
                 
-                ### ADDED: Convert the raw audio numbers into a PyTorch Tensor for the GPU
                 if isinstance(audio_list[0], torch.Tensor):
                     audio_features = torch.stack(audio_list).to(device)
                 else:
                     audio_tensors = []
                     for a in audio_list:
-                        # If the audio is wrapped in a dictionary, unwrap it to get the raw numbers
+
                         if isinstance(a, dict):
                             raw_numbers = list(a.values())[0]
                             audio_tensors.append(torch.as_tensor(raw_numbers, dtype=torch.float32))
@@ -89,7 +87,6 @@ def train(args, model, device, train_data, dev_data, test_data, processor):
 
                     audio_features = torch.stack(audio_tensors).to(device)
 
-            ### CHANGED: Pass audio_features into the model forward function
             loss, score = model(inputs, audio_features=audio_features, labels=labels)
             
             sum_loss += loss.item()
@@ -126,7 +123,6 @@ def train(args, model, device, train_data, dev_data, test_data, processor):
         torch.cuda.empty_cache()
     logger.info('Train done')
 
-
 def evaluate_acc_f1(args, model, device, data, processor, macro=False,pre = None, mode='test'):
         data_loader = DataLoader(data, batch_size=args.dev_batch_size, collate_fn=MyDataset.collate_func,shuffle=False)
         n_correct, n_total = 0, 0
@@ -137,14 +133,12 @@ def evaluate_acc_f1(args, model, device, data, processor, macro=False,pre = None
         sum_step = 0
         with torch.no_grad():
             for i_batch, t_batch in enumerate(data_loader):
-                ### CHANGED: Catch audio_list during evaluation testing too
                 text_list, image_list, audio_list, label_list, id_list = t_batch
                 
                 if args.model == 'MV_CLIP':
                     inputs = processor(text=text_list, images=image_list, padding='max_length', truncation=True, max_length=args.max_len, return_tensors="pt").to(device)
                     labels = torch.tensor(label_list).to(device)
                     
-                    ### FIXED: Handle dict audio features same as training loop
                     if isinstance(audio_list[0], torch.Tensor):
                         audio_features = torch.stack(audio_list).to(device)
                     else:
@@ -159,7 +153,6 @@ def evaluate_acc_f1(args, model, device, data, processor, macro=False,pre = None
                 
                 t_targets = labels
                 
-                ### CHANGED: Pass audio_features to the model during testing
                 loss, t_outputs = model(inputs, audio_features=audio_features, labels=labels)
                 
                 sum_loss += loss.item()

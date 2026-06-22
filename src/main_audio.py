@@ -23,7 +23,6 @@ def set_args():
     parser.add_argument('--weight_image', default=0.33, type=float, help='Beta: image/video modality weight')
     parser.add_argument('--weight_audio', default=0.34, type=float, help='Gamma: audio modality weight')
     parser.add_argument('--audio_size', default=768, type=int, help='Size of audio features in .pkl file')
-    ### ---------------------------------------------------------
     
     parser.add_argument('--simple_linear', default=False, type=bool, help='linear implementation choice')
     parser.add_argument('--num_train_epochs', default=10, type=int, help='number of train epoched')

@@ -60,8 +60,6 @@ def predict(args, model, device, data, processor, pre = None):
         recall_ = metrics.recall_score(t_targets_all.cpu(),torch.argmax(t_outputs_all, -1).cpu(), labels=[0, 1],average='macro')
         print("test_acc is {}, macro_test_f1 is {}, macro_test_precision is {}, macro_test_recall is {}, micro_test_f1 is {}, micro_test_precision is {}, micro_test_recall is {}".format(acc, f1_, precision_, recall_, f1, precision, recall))
 
-
-
 def set_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--device', default='0', type=str, help='device number')
@@ -77,8 +75,7 @@ def set_args():
     parser.add_argument('--layers', default=3, type=int, help='number of layers of transformers')
     parser.add_argument('--simple_linear', default=False, type=bool, help='linear implementation choice')
     return parser.parse_args()
-
-
+    
 def main():
     args = set_args()
     os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"

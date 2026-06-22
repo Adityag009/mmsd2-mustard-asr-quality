@@ -59,7 +59,7 @@ class MultimodalEncoder(nn.Module):
         attention_mask: (batch, 1, 1, seq_len) additive mask with 0 / -10000.
         Converted to (batch, seq_len) boolean key_padding_mask for nn.MultiheadAttention.
         """
-        # Convert additive mask -> boolean padding mask (True = ignore position)
+        
         if attention_mask is not None:
             key_padding_mask = attention_mask.squeeze(1).squeeze(1) < -1000  # (batch, seq)
         else:
@@ -85,7 +85,6 @@ class MV_CLIP(nn.Module):
         self.config.hidden_size = 512
         self.config.num_attention_heads = 8
 
-        ### ADDED: Save your modality weights from main_audio.py
         self.weight_text = args.weight_text
         self.weight_image = args.weight_image
         self.weight_audio = args.weight_audio
@@ -132,7 +131,7 @@ class MV_CLIP(nn.Module):
         text_feature  = self.text_linear(text_feature)
         image_feature = self.image_linear(image_feature)
 
-        ### Process audio features
+        # Process audio features
         audio_features = audio_features.to(dtype=torch.float32, device=text_feature.device)
         audio_feature  = self.audio_linear(audio_features)
 

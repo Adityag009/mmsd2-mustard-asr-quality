@@ -1,8 +1,8 @@
 import os
 # os.environ["CUDA_VISIBLE_DEVICES"] = '2'
-from model_audio import MV_CLIP          ### CHANGED: Pointing to your upcoming audio model
-from train_audio import train            ### CHANGED: Pointing to your upcoming audio trainer
-from data_set_audio import MyDataset     ### CHANGED: Pointing to the dataset you just finished!
+from model_audio import MV_CLIP          
+from train_audio import train            
+from data_set_audio import MyDataset     
 import torch
 import argparse
 import random
@@ -19,11 +19,10 @@ def set_args():
     parser.add_argument('--model', default='MV_CLIP', type=str, help='the model name', choices=['MV_CLIP'])
     parser.add_argument('--text_name', default='text_json_final', type=str, help='the text data folder name')
     
-    ### ADDED: Your Modality Weights (These answer your research question!)
     parser.add_argument('--weight_text', default=0.33, type=float, help='Alpha: text modality weight')
     parser.add_argument('--weight_image', default=0.33, type=float, help='Beta: image/video modality weight')
     parser.add_argument('--weight_audio', default=0.34, type=float, help='Gamma: audio modality weight')
-    parser.add_argument('--audio_size', default=768, type=int, help='Size of audio features in your .pkl file')
+    parser.add_argument('--audio_size', default=768, type=int, help='Size of audio features in .pkl file')
     ### ---------------------------------------------------------
     
     parser.add_argument('--simple_linear', default=False, type=bool, help='linear implementation choice')

@@ -16,18 +16,18 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 def set_args():
     parser = argparse.ArgumentParser()
     
-    # --- ORIGINAL ARGUMENTS ---
+    #  ORIGINAL ARGUMENTS 
     parser.add_argument('--device', default='0', type=str, help='device number')
     parser.add_argument('--model', default='MV_CLIP', type=str, help='the model name', choices=['MV_CLIP'])
     parser.add_argument('--text_name', default='text_json_final', type=str, help='the text data folder name')
     
-    # --- YOUR MODALITY WEIGHTS ---
+    
     parser.add_argument('--weight_text', default=0.33, type=float, help='Alpha: text modality weight')
     parser.add_argument('--weight_image', default=0.33, type=float, help='Beta: image/video modality weight')
     parser.add_argument('--weight_audio', default=0.34, type=float, help='Gamma: audio modality weight')
-    parser.add_argument('--audio_size', default=768, type=int, help='Size of audio features in your .pkl file')
+    parser.add_argument('--audio_size', default=768, type=int, help='Size of audio features in .pkl file')
     
-    # --- PAPER's CONFIG ARGUMENTS ---
+     # PAPER's CONFIG ARGUMENTS 
     parser.add_argument('--epochs', default=500, type=int, help='Paper num epochs')
     parser.add_argument('--batch_size', default=32, type=int, help='Paper batch size')
     parser.add_argument('--lr', default=0.01, type=float, help='Paper learning rate')
@@ -39,7 +39,7 @@ def set_args():
     parser.add_argument('--speaker', default='False', type=str, help='Speaker flag')
     parser.add_argument('--classification_report', default='True', type=str, help='Report flag')
     
-    # --- PREVIOUS LEARNING ARGUMENTS ---
+    #  PREVIOUS LEARNING ARGUMENTS 
     parser.add_argument('--simple_linear', default=False, type=bool, help='linear implementation choice')
     parser.add_argument('--num_train_epochs', default=10, type=int, help='number of train epoched')
     parser.add_argument('--train_batch_size', default=32, type=int, help='batch size in train phase')
@@ -63,7 +63,6 @@ def set_args():
     
     return parser.parse_args()
 
-
 def seed_everything(seed=42):
     random.seed(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
@@ -73,11 +72,10 @@ def seed_everything(seed=42):
     torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
 
-
 def main():
     args = set_args()
     
-    # Let it use the GPU for testing! Testing is much lighter on memory 
+    
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"--- HARDWARE CHECK: Currently running on {device} ---")
 
@@ -103,38 +101,24 @@ def main():
 
     model.to(device)
     
-    # =====================================================================
-    # --- CHANGE 3: THE BRAIN TRANSPLANT ---
-    # We load your saved 500-epoch model here instead of training it.
-    # Make sure this path exactly matches where your model was saved!
     checkpoint_path = '../output_dir/MV_CLIP/model_500.pt' 
     
-    print(f"\n🧠 Loading pre-trained brain from: {checkpoint_path}")
+    print(f"\n Loading pre-trained brain from: {checkpoint_path}")
     model.load_state_dict(torch.load(checkpoint_path, map_location=device))
     
-    # Lock the brain so it doesn't try to learn during the test
     model.eval() 
-    # =====================================================================
 
     wandb.watch(model, log="all")
 
-    # =====================================================================
-    # --- CHANGE 4: SKIP TRAINING AND RUN THE EXAM ---
-    
-    # ❌ WE COMMENT OUT THE TRAINING LOOP
-    # train(args, model, device, train_data, dev_data, test_data, processor)
-    
-    # ✅ WE RUN THE TEST EXAM DIRECTLY
-    print("\n--- RUNNING TEST SET WITH NEW WEIGHTS ---")
+    print("\n RUNNING TEST SET WITH NEW WEIGHTS ")
     print(f"Current Weights -> Text: {args.weight_text} | Image: {args.weight_image} | Audio: {args.weight_audio}")
     
-    with torch.no_grad(): # This completely stops memory from filling up!
+    with torch.no_grad(): 
         test_acc, test_f1, test_precision, test_recall = evaluate_acc_f1(
             args, model, device, test_data, processor, macro=True, mode='test'
         )
     
-    print(f"\n🏆 Final Test Accuracy: {test_acc*100:.2f}% | F1 Score: {test_f1*100:.2f}%")
-    # =====================================================================
+    print(f"\n Final Test Accuracy: {test_acc*100:.2f}% | F1 Score: {test_f1*100:.2f}%")
 
 if __name__ == '__main__':
     main()

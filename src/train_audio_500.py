@@ -18,13 +18,11 @@ def train(args, model, device, train_data, dev_data, test_data, processor):
     if not os.path.exists(args.output_dir):
         os.mkdir(args.output_dir)
 
-    # CHANGED: Now listens to Paper's batch_size instead of train_batch_size
     train_loader = DataLoader(dataset=train_data,
                               batch_size=args.batch_size, 
                               collate_fn=MyDataset.collate_func,
                               shuffle=True)
                               
-    # CHANGED: Now listens to Paper's epochs
     total_steps = int(len(train_loader) * args.epochs)
     model.to(device)
 
@@ -50,7 +48,7 @@ def train(args, model, device, train_data, dev_data, test_data, processor):
             optimizer = AdamW([
                     {"params": base_params},
                     {"params": model.model.parameters(),"lr": args.clip_learning_rate}
-                    ], lr=args.lr, weight_decay=args.weight_decay) # CHANGED: Listens to args.lr
+                    ], lr=args.lr, weight_decay=args.weight_decay)
 
             scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=int(args.warmup_proportion * total_steps),
                                                         num_training_steps=total_steps)
@@ -62,7 +60,7 @@ def train(args, model, device, train_data, dev_data, test_data, processor):
         raise Exception('Wrong Optimizer Name!!!')
 
     max_acc = 0.
-    patience_counter = 0  # ADDED: The Early Stopping Counter
+    patience_counter = 0 
 
     for i_epoch in trange(0, int(args.epochs), desc="Epoch", disable=False):
         sum_loss = 0.
@@ -108,10 +106,9 @@ def train(args, model, device, train_data, dev_data, test_data, processor):
         wandb.log({'dev_acc': dev_acc, 'dev_f1': dev_f1, 'dev_precision': dev_precision, 'dev_recall': dev_recall})
         logging.info("i_epoch is {}, dev_acc is {}, dev_f1 is {}, dev_precision is {}, dev_recall is {}".format(i_epoch, dev_acc, dev_f1, dev_precision, dev_recall))
 
-        # ADDED: The Patience & Early Stopping Logic
         if dev_acc > max_acc:
             max_acc = dev_acc
-            patience_counter = 0  # Reset patience because we hit a new high score!
+            patience_counter = 0 
             
             path_to_save = os.path.join(args.output_dir, args.model)
             if not os.path.exists(path_to_save):
@@ -138,7 +135,7 @@ def train(args, model, device, train_data, dev_data, test_data, processor):
 
 
 def evaluate_acc_f1(args, model, device, data, processor, macro=False,pre = None, mode='test'):
-        # CHANGED: Listens to teammate's dev batch size
+
         data_loader = DataLoader(data, batch_size=args.batch_size, collate_fn=MyDataset.collate_func,shuffle=False)
         n_correct, n_total = 0, 0
         t_targets_all, t_outputs_all = None, None
@@ -185,11 +182,9 @@ def evaluate_acc_f1(args, model, device, data, processor, macro=False,pre = None
                     t_targets_all = torch.cat((t_targets_all, t_targets), dim=0)
                     t_outputs_all = torch.cat((t_outputs_all, outputs), dim=0)
         
-        # ADDED: Print Scikit-Learn Classification Report for Test Mode
         if mode == 'test' and str(args.classification_report).lower() == 'true':
-            print("\n================ CLASSIFICATION REPORT ================")
+            print("\n CLASSIFICATION REPORT")
             print(metrics.classification_report(t_targets_all.cpu(), t_outputs_all.cpu(), target_names=['Normal', 'Sarcasm']))
-            print("========================================================\n")
 
         if mode == 'test':
             wandb.log({'test_loss': sum_loss/sum_step})

@@ -10,10 +10,8 @@ logger = logging.getLogger(__name__)
 WORKING_PATH = r"X:\ASR\MMSD2.0-main\data"
 
 class MyDataset(Dataset):
-    # We catch any extra arguments main_audio tries to pass with *args and **kwargs
     def __init__(self, mode, text_name=None, limit=None, *args, **kwargs):
         
-        # THE OVERRIDE: We ignore what main_audio says and FORCE it to use your folder
         self.text_name = "mustard_text" 
         
         audio_path = os.path.join(WORKING_PATH, "extracted_features", "audio_291.pkl")
